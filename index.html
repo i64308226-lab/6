@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#050505">
+    <title>Review Share Ultra | Социальная сеть будущего</title>
+    
+    <!-- Шрифты и Иконки -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ============================================
+           ОСНОВНЫЕ ПЕРЕМЕННЫЕ И ТЕМЫ
+           ============================================ */
+        :root {
+            /* Цвета - Глубокая темная тема */
+            --bg-body: #050505;
+            --bg-card: #121212;
+            --bg-elevated: #1e1e1e;
+            --bg-input: #2a2a2a;
+            
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-muted: #52525b;
+            
+            --border-light: #27272a;
+            
+            /* Градиенты брендов */
+            --gradient-main: linear-gradient(135deg, #6366f1 0%, #ec4899 50%, #f59e0b 100%);
+            --gradient-insta: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            --gradient-yt: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+            --gradient-tg: linear-gradient(135deg, #2481cc 0%, #0088cc 100%);
+            --gradient-tw: linear-gradient(135deg, #000000 0%, #333333 100%);
+            --gradient-fb: linear-gradient(135deg, #1877f2 0%, #0056b3 100%);
+            
+            /* Отступы и Радиусы */
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-full: 999px;
+            
+            /* Анимации */
+            --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            padding-bottom: 90px;
+            padding-top: 140px;
+        }
+
+        /* Скроллбар */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg-body); }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+
+        /* ============================================
+           ШАПКА И НАВИГАЦИЯ
+           ============================================ */
+        .app-header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            background: rgba(5, 5, 5, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-light);
+            transition: transform 0.3s ease;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 900;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 16px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 20px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .badge-dot {
+            position: absolute;
+            top: -2px; right: -2px;
+            width: 8px; height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+            border: 2px solid var(--bg-body);
+        }
+
+        /* Вкладки платформ (Верхние) */
+        .platform-tabs {
+            display: flex;
+            gap: 8px;
+            padding: 8px 16px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .platform-tabs::-webkit-scrollbar { display: none; }
+
+        .p-tab {
+            padding: 6px 14px;
+            border-radius: var(--radius-full);
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .p-tab.active {
+            color: white;
+            border-color: transparent;
+            transform: scale(1.05);
+        }
+        
+        .p-tab[data-platform="all"].active { background: var(--gradient-main); }
+        .p-tab[data-platform="video"].active { background: var(--gradient-yt); }
+        .p-tab[data-platform="photo"].active { background: var(--gradient-insta); }
+        .p-tab[data-platform="text"].active { background: var(--gradient-tw); }
+        .p-tab[data-platform="channel"].active { background: var(--gradient-tg); }
+
+        /* Поиск */
+        .search-container {
+            padding: 8px 16px 16px;
+        }
+        .search-box {
+            background: var(--bg-input);
+            border-radius: var(--radius-md);
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid transparent;
+            transition: 0.2s;
+        }
+        .search-box:focus-within {
+            border-color: #6366f1;
+            background: #2a2a2a;
+        }
+        .search-input {
+            background: transparent;
+            border: none;
+            color: white;
+            flex: 1;
+            outline: none;
+            font-size: 14px;
+        }
+        .search-input::placeholder {
+            color: #666;
+        }
+
+        /* ============================================
+           КОНТЕНТ
+           ============================================ */
+        .tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Лента историй */
+        .stories-rail {
+            display: flex;
+            gap: 12px;
+            padding: 16px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .stories-rail::-webkit-scrollbar { display: none; }
+        
+        .story-circle {
+            min-width: 70px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .story-ring {
+            width: 68px; height: 68px;
+            border-radius: 50%;
+            padding: 3px;
+            background: var(--gradient-insta);
+            position: relative;
+        }
+        .story-ring.live { background: var(--gradient-yt); }
+        .story-ring.channel { background: var(--gradient-tg); }
+        .story-img {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            border: 3px solid var(--bg-body);
+            object-fit: cover;
+            background: #333;
+        }
+        .story-name {
+            font-size: 11px;
+            color: var(--text-secondary);
+            max-width: 70px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Карточки постов */
+        .feed-container { padding: 0 0 20px; }
+        
+        .post-card {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-light);
+            margin-bottom: 1px;
+            padding-bottom: 12px;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            gap: 12px;
+        }
+        .user-avatar {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .user-info { flex: 1; }
+        .user-name { font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+        .verified-badge { color: #3b82f6; font-size: 12px; }
+        .post-meta { font-size: 12px; color: var(--text-muted); }
+        
+        .post-type-badge {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: auto;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .type-video { background: rgba(255, 0, 0, 0.2); color: #ff4444; }
+        .type-text { background: rgba(255, 255, 255, 0.1); color: #aaa; }
+        .type-channel { background: rgba(36, 129, 204, 0.2); color: #3baee8; }
+        .type-photo { background: rgba(236, 72, 153, 0.2); color: #ec4899; }
+
+        .post-content-text {
+            padding: 0 16px 12px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+        .hashtag { color: #6366f1; cursor: pointer; }
+
+        .post-media {
+            width: 100%;
+            display: block;
+            background: #000;
+        }
+        .media-aspect-square { aspect-ratio: 1/1; object-fit: cover; }
+        .media-aspect-video { aspect-ratio: 16/9; object-fit: cover; }
+
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 16px;
+        }
+        .action-group { display: flex; gap: 20px; }
+        .action-btn {
+            background: none; border: none;
+            color: var(--text-primary);
+            font-size: 22px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: transform 0.2s;
+        }
+        .action-btn:active { transform: scale(0.9); }
+        .action-btn.liked { color: #ef4444; }
+        .action-count { font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+
+        /* Shorts/Reels View */
+        .shorts-container {
+            height: calc(100vh - 140px);
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            background: #000;
+        }
+        .short-item {
+            height: 100%;
+            width: 100%;
+            scroll-snap-align: start;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+        }
+        .short-video {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+        }
+        .short-overlay {
+            position: relative;
+            z-index: 2;
+            padding: 20px;
+            width: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+        }
+        .short-actions {
+            position: absolute;
+            right: 10px;
+            bottom: 100px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+        .short-action-btn {
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(4px);
+            border: none;
+            color: white;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .short-action-btn span {
+            font-size: 10px;
+            margin-top: 4px;
+            display: block;
+            text-align: center;
+        }
+
+        /* Список каналов (Telegram Style) */
+        .channels-list { padding: 10px; }
+        .channel-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        .channel-icon {
+            width: 50px; height: 50px;
+            border-radius: 12px;
+            background: var(--gradient-tg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* ============================================
+           НИЖНЯЯ НАВИГАЦИЯ
+           ============================================ */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: rgba(5, 5, 5, 0.95);
+            backdrop-filter: blur(16px);
+            border-top: 1px solid var(--border-light);
+            padding: 8px 0 20px;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            transition: 0.2s;
+        }
+        .nav-item.active { color: var(--text-primary); }
+        .nav-item.active i { transform: translateY(-2px); }
+        .nav-icon {
+            width: 44px; height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: 0.2s;
+        }
+        .nav-item.active .nav-icon {
+            background: var(--gradient-main);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+        .nav-label { font-size: 10px; font-weight: 600; }
+
+        .create-btn-central {
+            position: relative;
+            top: -24px;
+            width: 56px; height: 56px;
+            border-radius: 50%;
+            background: var(--gradient-main);
+            border: 4px solid var(--bg-body);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 8px 20px rgba(236, 72, 153, 0.5);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .create-btn-central:active { transform: scale(0.9); }
+
+        /* Кнопка прямого эфира */
+        .fab-live {
+            position: fixed;
+            bottom: 90px; right: 20px;
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            background: #ef4444;
+            color: white;
+            border: none;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+            z-index: 900;
+            animation: pulse 2s infinite;
+            cursor: pointer;
+        }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+
+    </style>
+</head>
+<body>
+
+    <!-- Шапка -->
+    <header class="app-header" id="appHeader">
+        <div class="header-top">
+            <div class="logo">Review Share</div>
+            <div class="header-actions">
+                <button class="icon-btn" title="Трансляция"><i class="fas fa-cast"></i></button>
+                <button class="icon-btn" title="Уведомления">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge-dot"></span>
+                </button>
+                <button class="icon-btn" title="Сообщения"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+        
+        <!-- Фильтры платформ -->
+        <div class="platform-tabs">
+            <button class="p-tab active" data-platform="all" onclick="filterFeed('all')"><i class="fas fa-globe"></i> Всё</button>
+            <button class="p-tab" data-platform="video" onclick="filterFeed('video')"><i class="fas fa-play"></i> Видео</button>
+            <button class="p-tab" data-platform="photo" onclick="filterFeed('photo')"><i class="fas fa-image"></i> Фото</button>
+            <button class="p-tab" data-platform="text" onclick="filterFeed('text')"><i class="fas fa-font"></i> Посты</button>
+            <button class="p-tab" data-platform="channel" onclick="filterFeed('channel')"><i class="fas fa-bullhorn"></i> Каналы</button>
+            <button class="p-tab" data-platform="live" onclick="filterFeed('live')"><i class="fas fa-broadcast-tower"></i> Эфир</button>
+        </div>
+
+        <div class="search-container">
+            <div class="search-box">
+                <i class="fas fa-search" style="color: #666;"></i>
+                <input type="text" class="search-input" placeholder="Поиск постов, видео, каналов...">
+                <i class="fas fa-microphone" style="color: #6366f1; cursor: pointer;" title="Голосовой поиск"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- ГЛАВНАЯ ЛЕНТА -->
+    <main id="homeTab" class="tab-content active">
+        <!-- Истории -->
+        <div class="stories-rail">
+            <div class="story-circle">
+                <div class="story-ring" style="background: #333; border: 2px dashed #666;">
+                    <img src="https://i.pravatar.cc/150?img=60" class="story-img" style="opacity: 0.5;">
+                    <i class="fas fa-plus" style="position: absolute; bottom: 0; right: 0; background: #3b82f6; color: white; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; border: 2px solid black;"></i>
+                </div>
+                <span class="story-name">Ваша история</span>
+            </div>
+            <div class="story-circle">
+                <div class="story-ring live"><img src="https://i.pravatar.cc/150?img=11" class="story-img"></div>
+                <span class="story-name">Tech Live</span>
+            </div>
+            <div class="story-circle">
+                <div class="story-ring"><img src="https://i.pravatar.cc/150?img=5" class="story-img"></div>
+                <span class="story-name">Анна</span>
+            </div>
+            <div class="story-circle">
+                <div class="story-ring channel"><img src="https://i.pravatar.cc/150?img=3" class="story-img"></div>
+                <span class="story-name">Новости</span>
+            </div>
+            <div class="story-circle">
+                <div class="story-ring"><img src="https://i.pravatar.cc/150?img=8" class="story-img"></div>
+                <span class="story-name">Макс</span>
+            </div>
+            <div class="story-circle">
+                <div class="story-ring"><img src="https://i.pravatar.cc/150?img=12" class="story-img"></div>
+                <span class="story-name">Путешествия</span>
+            </div>
+        </div>
+
+        <!-- Лента постов -->
+        <div class="feed-container" id="mainFeed">
+            <!-- Пост 1: Видео (YouTube Style) -->
+            <article class="post-card" data-type="video">
+                <div class="post-header">
+                    <img src="https://i.pravatar.cc/150?img=11" class="user-avatar">
+                    <div class="user-info">
+                        <div class="user-name">Техно Блогер <i class="fas fa-check-circle verified-badge"></i></div>
+                        <div class="post-meta">2 часа назад • 45 тыс. просмотров</div>
+                    </div>
+                    <span class="post-type-badge type-video">Видео</span>
+                </div>
+                <img src="https://picsum.photos/600/340?random=1" class="post-media media-aspect-video">
+                <div class="post-content-text">
+                    Распаковка нового флагмана! Стоит ли обновляться? 📱 <span class="hashtag">#техно #обзор</span>
+                </div>
+                <div class="post-actions">
+                    <div class="action-group">
+                        <button class="action-btn" onclick="toggleLike(this)"><i class="far fa-heart"></i> <span class="action-count">12K</span></button>
+                        <button class="action-btn"><i class="far fa-comment"></i> <span class="action-count">450</span></button>
+                        <button class="action-btn"><i class="fas fa-share"></i></button>
+                    </div>
+                    <button class="action-btn"><i class="far fa-bookmark"></i></button>
+                </div>
+            </article>
+
+            <!-- Пост 2: Текст (Twitter Style) -->
+            <article class="post-card" data-type="text">
+                <div class="post-header">
+                    <img src="https://i.pravatar.cc/150?img=12" class="user-avatar">
+                    <div class="user-info">
+                        <div class="user-name">Илон Фанат</div>
+                        <div class="post-meta">5 часов назад</div>
+                    </div>
+                    <span class="post-type-badge type-text">Пост</span>
+                </div>
+                <div class="post-content-text">
+                    Только что запустил свой стартап! 🚀 Мы создаем будущее социальных сетей на базе ИИ. Кто хочет ранний доступ? Пишите в комментариях! 👇
+                </div>
+                <div class="post-actions">
+                    <div class="action-group">
+                        <button class="action-btn" onclick="toggleLike(this)"><i class="far fa-heart"></i> <span class="action-count">892</span></button>
+                        <button class="action-btn"><i class="fas fa-retweet"></i> <span class="action-count">120</span></button>
+                        <button class="action-btn"><i class="far fa-comment"></i> <span class="action-count">56</span></button>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Пост 3: Фото (Instagram Style) -->
+            <article class="post-card" data-type="photo">
+                <div class="post-header">
+                    <img src="https://i.pravatar.cc/150?img=5" class="user-avatar">
+                    <div class="user-info">
+                        <div class="user-name">Дневник Путешественника</div>
+                        <div class="post-meta">Вчера</div>
+                    </div>
+                    <span class="post-type-badge type-photo">Фото</span>
+                </div>
+                <img src="https://picsum.photos/600/600?random=2" class="post-media media-aspect-square">
+                <div class="post-content-text">
+                    Закат на Бали 🌅 Ничто не сравнится с этим видом. <span class="hashtag">#путешествия #бали #закат</span>
+                </div>
+                <div class="post-actions">
+                    <div class="action-group">
+                        <button class="action-btn" onclick="toggleLike(this)"><i class="far fa-heart"></i> <span class="action-count">3.4K</span></button>
+                        <button class="action-btn"><i class="far fa-comment"></i> <span class="action-count">128</span></button>
+                        <button class="action-btn"><i class="far fa-paper-plane"></i></button>
+                    </div>
+                    <button class="action-btn"><i class="far fa-bookmark"></i></button>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <!-- ВКЛАДКА SHORTS/REELS -->
+    <main id="shortsTab" class="tab-content">
+        <div class="shorts-container">
+            <!-- Short 1 -->
+            <div class="short-item">
+                <img src="https://picsum.photos/400/800?random=10" class="short-video">
+                <div class="short-overlay">
+                    <h3 style="margin-bottom: 8px;">Невероятные танцы! 💃</h3>
+                    <p style="font-size: 13px; opacity: 0.9;">@танцор_про • 1.2 млн просмотров</p>
+                </div>
+                <div class="short-actions">
+                    <button class="short-action-btn" onclick="toggleShortLike(this)"><i class="far fa-heart"></i><br><span>45K</span></button>
+                    <button class="short-action-btn"><i class="fas fa-comment"></i><br><span>1.2K</span></button>
+                    <button class="short-action-btn"><i class="fas fa-share"></i></button>
+                </div>
+            </div>
+            <!-- Short 2 -->
+            <div class="short-item">
+                <img src="https://picsum.photos/400/800?random=11" class="short-video">
+                <div class="short-overlay">
+                    <h3 style="margin-bottom: 8px;">Кулинарный лайфхак 🍳</h3>
+                    <p style="font-size: 13px; opacity: 0.9;">@шеф_мастер • 890 тыс. просмотров</p>
+                </div>
+                <div class="short-actions">
+                    <button class="short-action-btn" onclick="toggleShortLike(this)"><i class="far fa-heart"></i><br><span>22K</span></button>
+                    <button class="short-action-btn"><i class="fas fa-comment"></i><br><span>500</span></button>
+                    <button class="short-action-btn"><i class="fas fa-share"></i></button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ВКЛАДКА КАНАЛЫ (Telegram Style) -->
+    <main id="channelsTab" class="tab-content">
+        <div class="channels-list">
+            <div class="channel-item">
+                <div class="channel-icon"><i class="fas fa-newspaper"></i></div>
+                <div class="user-info">
+                    <div class="user-name">Мировые Новости</div>
+                    <div class="post-meta">1.2 млн подписчиков • 5 постов сегодня</div>
+                </div>
+                <button class="icon-btn" style="color: #3b82f6;"><i class="fas fa-bell-slash"></i></button>
+            </div>
+            <div class="channel-item">
+                <div class="channel-icon" style="background: var(--gradient-insta);"><i class="fas fa-camera"></i></div>
+                <div class="user-info">
+                    <div class="user-name">Фото Хаб</div>
+                    <div class="post-meta">450 тыс. подписчиков • Новый урок</div>
+                </div>
+                <button class="icon-btn" style="color: #3b82f6;"><i class="fas fa-bell"></i></button>
+            </div>
+            <div class="channel-item">
+                <div class="channel-icon" style="background: var(--gradient-yt);"><i class="fas fa-gamepad"></i></div>
+                <div class="user-info">
+                    <div class="user-name">Игровые Сливы</div>
+                    <div class="post-meta">890 тыс. подписчиков • Сейчас в эфире</div>
+                </div>
+                <button class="icon-btn" style="color: #ef4444;"><i class="fas fa-circle" style="font-size: 8px;"></i> LIVE</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- ВКЛАДКА ПРОФИЛЬ -->
+    <main id="profileTab" class="tab-content">
+        <div style="padding: 20px; text-align: center;">
+            <img src="https://i.pravatar.cc/300?img=60" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid #6366f1; margin-bottom: 16px;">
+            <h2 style="font-size: 24px; font-weight: 800;">Мой Профиль</h2>
+            <p style="color: #666; margin-bottom: 20px;">@ultra_user_2026</p>
+            
+            <div style="display: flex; justify-content: center; gap: 30px; margin-bottom: 24px;">
+                <div><div style="font-weight: 800; font-size: 18px;">142</div><div style="font-size: 12px; color: #666;">Посты</div></div>
+                <div><div style="font-weight: 800; font-size: 18px;">10.5K</div><div style="font-size: 12px; color: #666;">Подписчики</div></div>
+                <div><div style="font-weight: 800; font-size: 18px;">340</div><div style="font-size: 12px; color: #666;">Подписки</div></div>
+            </div>
+
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button style="flex: 1; padding: 12px; background: var(--gradient-main); border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer;">Редактировать</button>
+                <button style="flex: 1; padding: 12px; background: #333; border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer;">Поделиться</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Нижняя навигация -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="switchMainTab('home', this)">
+            <div class="nav-icon"><i class="fas fa-home"></i></div>
+            <span class="nav-label">Главная</span>
+        </button>
+        <button class="nav-item" onclick="switchMainTab('explore', this)">
+            <div class="nav-icon"><i class="fas fa-compass"></i></div>
+            <span class="nav-label">Обзор</span>
+        </button>
+        
+        <button class="create-btn-central" onclick="openCreateModal()">
+            <i class="fas fa-plus"></i>
+        </button>
+        
+        <button class="nav-item" onclick="switchMainTab('shorts', this)">
+            <div class="nav-icon"><i class="fas fa-play"></i></div>
+            <span class="nav-label">Shorts</span>
+        </button>
+        <button class="nav-item" onclick="switchMainTab('channels', this)">
+            <div class="nav-icon"><i class="fas fa-users"></i></div>
+            <span class="nav-label">Каналы</span>
+        </button>
+        <button class="nav-item" onclick="switchMainTab('profile', this)">
+            <div class="nav-icon"><i class="fas fa-user"></i></div>
+            <span class="nav-label">Профиль</span>
+        </button>
+    </nav>
+
+    <!-- Кнопка Прямого Эфира -->
+    <button class="fab-live" title="Начать эфир" onclick="startLive()">
+        <i class="fas fa-video"></i>
+    </button>
+
+    <script>
+        // Переключение вкладок
+        function switchMainTab(tabName, btn) {
+            // Обновление навигации
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            if(btn) btn.classList.add('active');
+
+            // Скрытие всех вкладок
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            // Показать выбранную вкладку
+            let targetId = tabName + 'Tab';
+            if(tabName === 'explore') targetId = 'homeTab'; // Для демо используем главную
+            if(tabName === 'profile') targetId = 'profileTab';
+            if(tabName === 'shorts') targetId = 'shortsTab';
+            if(tabName === 'channels') targetId = 'channelsTab';
+            
+            document.getElementById(targetId).classList.add('active');
+            
+            // Прокрутка вверх
+            window.scrollTo(0,0);
+        }
+
+        // Фильтрация ленты
+        function filterFeed(type) {
+            document.querySelectorAll('.p-tab').forEach(t => t.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            const posts = document.querySelectorAll('.post-card');
+            posts.forEach(post => {
+                if(type === 'all' || post.dataset.type === type) {
+                    post.style.display = 'block';
+                    post.style.animation = 'fadeIn 0.3s ease';
+                } else {
+                    post.style.display = 'none';
+                }
+            });
+        }
+
+        // Лайк поста
+        function toggleLike(btn) {
+            btn.classList.toggle('liked');
+            const icon = btn.querySelector('i');
+            if(btn.classList.contains('liked')) {
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+            } else {
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+            }
+        }
+
+        // Лайк Shorts
+        function toggleShortLike(btn) {
+            btn.classList.toggle('liked');
+            const icon = btn.querySelector('i');
+            const countSpan = btn.querySelector('span');
+            let count = parseInt(countSpan.innerText.replace('K', '000')); // Упрощенно
+            
+            if(btn.classList.contains('liked')) {
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+                icon.style.color = '#ef4444';
+            } else {
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+                icon.style.color = 'white';
+            }
+        }
+
+        // Модальное окно создания
+        function openCreateModal() {
+            const options = confirm("Выберите тип контента:\nOK — Фото/Видео\nОтмена — Текстовый пост");
+            if(options) {
+                alert("📷 Открытие камеры/галереи...");
+            } else {
+                alert("✍️ Открытие текстового редактора...");
+            }
+        }
+
+        // Запуск прямого эфира
+        function startLive() {
+            const confirmLive = confirm("Вы хотите начать прямую трансляцию?\n\nЗрители получат уведомление.");
+            if(confirmLive) {
+                alert(" ЗАПУСК ЭФИРА...\nКамера активируется через 3 секунды.");
+            }
+        }
+
+        // Эффект шапки при скролле
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('appHeader');
+            if(window.scrollY > 10) {
+                header.style.background = 'rgba(5, 5, 5, 0.95)';
+                header.style.boxShadow = '0 4px 20px rgba(0,0,0,0.5)';
+            } else {
+                header.style.background = 'rgba(5, 5, 5, 0.85)';
+                header.style.boxShadow = 'none';
+            }
+        });
+    </script>
+</body>
+  </html>
